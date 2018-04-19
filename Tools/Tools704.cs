@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-namespace tool704
+namespace Tools704
 {
     public struct W704 /* 36 Bit Word with access to Adress, Tag, Decrement, Prefix,  Magnitude, Sign, Logical Word, Arithmetical Word */
     {
@@ -501,7 +501,7 @@ namespace tool704
             {
                 int b = Convert.ToInt32(ibm704bcd[i].Substring(0, 2), 8);
                 if (bcd2asc[b] != 0 || b != i)
-                    throw new Exception("BcdConverter: error in bcd table");
+                    Console.Error.WriteLine("BcdConverter: error in bcd table");
                 char c = ibm704bcd[i][2];
                 bcd2asc[b] = c;
                 char cl = Char.ToLower(c);
@@ -516,7 +516,7 @@ namespace tool704
                 throw new Exception("BcdConverter:invalid BCD char");
             if (bcd2asc[bcd] == -1)
             {
-                Console.Write("{0} ", Convert.ToString(bcd, 8).PadLeft(2, '0'));
+                Console.Error.Write("{0} ", Convert.ToString(bcd, 8).PadLeft(2, '0'));
                 return '?';
             }
             return (char)bcd2asc[bcd];
@@ -529,7 +529,7 @@ namespace tool704
             }
             else
             {
-                Console.WriteLine("invalid Char {0}", chr);
+                Console.Error.WriteLine("invalid Char {0}", chr);
                 return (byte)asc2bcd['?'];
             }
         }
@@ -661,7 +661,7 @@ namespace tool704
         /* daten ist folge von Zeichen Bits 0-6: Zeichen mit Parity, Bit 7: 0 */
         /* oder 4Byte==0.-> EOF Marker oder 4Byte=0xFFFFFFFF EOM (End of Media) */
 
-        Stream f = null;  /* eingabedatei */
+        FileStream f = null;  /* eingabedatei */
         bool stored; /* true: es wurde schon das erste byte des nächsten records oder eof gelesen.*/
         int last;  /* erstes Byte des nächsten records oder -1=eom */
         bool p7bflag;
@@ -691,7 +691,7 @@ namespace tool704
                 if (b < 0) /* end of media ? */
                     return -1; /* EOM */
                 if ((b & 128) == 0)  /* das erste zeichen eines records muss msb gesetzt haben */
-                    throw new InvalidDataException("TapeReader:Bit 8 not set at record start");
+                    throw new InvalidDataException("TapeReader:Bit 7 not set at record start");
                 List<byte> trecord = new List<byte>(160) { (byte)(b & 127) }; /* record start marker entfernen, zeichen speichern */
                 do
                 {
@@ -727,7 +727,7 @@ namespace tool704
                 else
                 {
                     if (l > maxbuffer)
-                        throw new Exception("record to big");
+                        return -1; 
                     byte[] trecord = new byte[l];
                     if (l != f.Read(trecord, 0, (int)l))
                         throw new Exception("read error");
@@ -762,11 +762,11 @@ namespace tool704
     }
     public class TapeWriter /* Writes Tapes in P7B and tap format */ : IDisposable
     {
-        Stream f = null;  /* ausgabedatei */
+        FileStream f = null;  /* ausgabedatei */
         bool p7bflag;
         public TapeWriter(string filename, bool p7b)
         {
-            f = File.OpenWrite(filename);
+            f = File.Create(filename);
             p7bflag = p7b;
         }
         public void WriteRecord(bool binary, byte[] mrecord)

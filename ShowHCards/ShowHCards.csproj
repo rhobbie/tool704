@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0BCEAE98-5439-426C-9087-7A6A0653DAED}</ProjectGuid>
+    <ProjectGuid>{4B0249E8-F75F-46D9-B0F2-703FEE56DC24}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SapSplit</RootNamespace>
-    <AssemblyName>SapSplit</AssemblyName>
+    <RootNamespace>ShowHCards</RootNamespace>
+    <AssemblyName>ShowHCards</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

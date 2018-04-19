@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B57C70BD-AB9B-4CF5-95ED-7EA69723DC27}</ProjectGuid>
+    <ProjectGuid>{A5598ED9-5C57-4AEC-94D7-3BB461D316B7}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SetPrefix</RootNamespace>
-    <AssemblyName>SetPrefix</AssemblyName>
+    <RootNamespace>PatchCard</RootNamespace>
+    <AssemblyName>PatchCard</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -49,9 +49,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tools\Tools.csproj">
+    <ProjectReference Include="..\Tools\Tools704.csproj">
       <Project>{227c3fe7-9b5a-415c-9435-fe02a1436190}</Project>
-      <Name>Tools</Name>
+      <Name>Tools704</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

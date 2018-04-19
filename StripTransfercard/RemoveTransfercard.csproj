@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0BCEAE98-5439-426C-9087-7A6A0653DAED}</ProjectGuid>
+    <ProjectGuid>{6851C64F-DD41-4C74-810F-266CB6C2EFEE}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SapSplit</RootNamespace>
-    <AssemblyName>SapSplit</AssemblyName>
+    <RootNamespace>RemoveTransfercard</RootNamespace>
+    <AssemblyName>RemoveTransfercard</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

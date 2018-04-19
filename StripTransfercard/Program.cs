@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using tool704;
-namespace StripTransfercard
+using Tools704;
+namespace RemoveTransfercard
 {
     class Program
     {
@@ -12,7 +12,7 @@ namespace StripTransfercard
         {
             if (args.Length != 2)
             {
-                Console.Error.WriteLine("Usage StripTransfercard in.cbn[+in2.cbn ...] out.cbn");
+                Console.Error.WriteLine("Usage RemoveTransfercard in.cbn[+in2.cbn ...] out.cbn");
                 return;
             }
             bool cardtypeset = false;
@@ -74,7 +74,7 @@ namespace StripTransfercard
                                         Console.Error.WriteLine("Card type change");
                                         return;
                                     }
-                                    Console.WriteLine("transfercard removed");
+                                    Console.WriteLine("Rel transfercard removed");
                                     tfound = true;
                                     break;
                                 default:

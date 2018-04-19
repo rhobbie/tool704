@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using tool704;
+using Tools704;
 namespace Split
 {
     class DeckReader
@@ -254,14 +254,14 @@ namespace Split
                 {
                     if (dr.Read(out int adr, out long value))
                     {
-                        Console.WriteLine("Abweichung {0} {1}", thispage, thisline);
+                        Console.WriteLine("Difference {0} {1}", thispage, thisline);
                         Console.WriteLine("Card {0} {1}", Convert.ToString(adr, 8).PadLeft(5, '0'), Convert.ToString(value, 8).PadLeft(12, '0'));
                         Console.WriteLine("List Transfer {0}", Convert.ToString((int)TransferAdr, 8).PadLeft(5, '0'));
                         Environment.Exit(-1);
                     }
                     else if (adr != TransferAdr)
                     {
-                        Console.WriteLine("Abweichung {0} {1}", thispage, thisline);
+                        Console.WriteLine("Difference {0} {1}", thispage, thisline);
                         Console.WriteLine("Card Transfer {0}", Convert.ToString(adr, 8).PadLeft(5, '0'));
                         Console.WriteLine("List Transfer {0}", Convert.ToString((int)TransferAdr, 8).PadLeft(5, '0'));
                         Environment.Exit(-1);
@@ -271,7 +271,7 @@ namespace Split
                 }
                 if (!dr.CardEmpty())
                 {
-                    Console.WriteLine("Abweichung {0} {1}", thispage, thisline);
+                    Console.WriteLine("Difference {0} {1}", thispage, thisline);
                     Console.WriteLine("more data on card");
                     Environment.Exit(-1);
                 }
@@ -322,7 +322,7 @@ namespace Split
             {
                 if ((adr != dadr || value != dvalue) && (dr.Cardtype() != 'F'))
                 {
-                    Console.WriteLine("Abweichung {0} {1}", thispage, thisline);
+                    Console.WriteLine("Difference {0} {1}", thispage, thisline);
                     Console.WriteLine("Card {0} {1}", Convert.ToString(dadr, 8).PadLeft(5, '0'), Convert.ToString(dvalue, 8).PadLeft(12, '0'));
                     Console.WriteLine("List {0} {1}", Convert.ToString(adr, 8).PadLeft(5, '0'), Convert.ToString(value, 8).PadLeft(12, '0'));
                     Environment.Exit(-1);
@@ -330,7 +330,7 @@ namespace Split
             }
             else
             {
-                Console.WriteLine("Abweichung {0} {1}", thispage, thisline);
+                Console.WriteLine("Difference {0} {1}", thispage, thisline);
                 Console.WriteLine("Card Transfer {0}", Convert.ToString(dadr, 8).PadLeft(5, '0'));
                 Console.WriteLine("List {0} {1}", Convert.ToString(adr, 8).PadLeft(5, '0'), Convert.ToString(value, 8).PadLeft(12, '0'));
                 Environment.Exit(-1);

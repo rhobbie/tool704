@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0BCEAE98-5439-426C-9087-7A6A0653DAED}</ProjectGuid>
+    <ProjectGuid>{B43F197D-D240-4140-8D6B-47860FE8FB94}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SapSplit</RootNamespace>
-    <AssemblyName>SapSplit</AssemblyName>
+    <RootNamespace>Punch</RootNamespace>
+    <AssemblyName>Punch</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

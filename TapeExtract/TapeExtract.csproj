@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0BCEAE98-5439-426C-9087-7A6A0653DAED}</ProjectGuid>
+    <ProjectGuid>{133F4A37-CAC0-4D7A-9FA8-ED6F72F81AC0}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SapSplit</RootNamespace>
-    <AssemblyName>SapSplit</AssemblyName>
+    <RootNamespace>TapeExtract</RootNamespace>
+    <AssemblyName>TapeExtract</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
