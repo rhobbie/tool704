@@ -8,11 +8,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SapSplit", "SapSplit\SapSpl
 		{227C3FE7-9B5A-415C-9435-FE02A1436190} = {227C3FE7-9B5A-415C-9435-FE02A1436190}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools704", "Tools\Tools704.csproj", "{227C3FE7-9B5A-415C-9435-FE02A1436190}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools704", "Tools704\Tools704.csproj", "{227C3FE7-9B5A-415C-9435-FE02A1436190}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowCards", "ShowCards\ShowCards.csproj", "{FA728683-55BF-49D7-83C6-4268464FFE35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoveTransfercard", "StripTransfercard\RemoveTransfercard.csproj", "{6851C64F-DD41-4C74-810F-266CB6C2EFEE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoveTransfercard", "RemoveTransfercard\RemoveTransfercard.csproj", "{6851C64F-DD41-4C74-810F-266CB6C2EFEE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Punch", "Punch\Punch.csproj", "{B43F197D-D240-4140-8D6B-47860FE8FB94}"
 EndProject
@@ -30,9 +30,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CopyCards", "CopyCards\Copy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterTape", "MasterTape\MasterTape.csproj", "{0ECF0E28-70FE-4F05-83E2-BA8951FA9438}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchCard", "Patch\PatchCard.csproj", "{A5598ED9-5C57-4AEC-94D7-3BB461D316B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchCard", "PatchCard\PatchCard.csproj", "{A5598ED9-5C57-4AEC-94D7-3BB461D316B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tp2p7b", "Tap2p7b\Tp2p7b.csproj", "{FFEB3907-0441-4565-9B03-BEEF83A31D84}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tp2p7b", "Tp2p7b\Tp2p7b.csproj", "{FFEB3907-0441-4565-9B03-BEEF83A31D84}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanDeck", "CleanDeck\CleanDeck.csproj", "{F8526082-AC02-4F5D-94E4-4D841E299562}"
 EndProject

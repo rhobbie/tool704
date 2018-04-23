@@ -64,7 +64,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tools\Tools704.csproj">
+    <ProjectReference Include="..\Tools704\Tools704.csproj">
       <Project>{227c3fe7-9b5a-415c-9435-fe02a1436190}</Project>
       <Name>Tools704</Name>
     </ProjectReference>
