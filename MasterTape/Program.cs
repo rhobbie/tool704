@@ -26,7 +26,7 @@ namespace MasterTape
         }
         static readonly string[] diagrecs = new string[192]
         {
-            "00001  0 00031 0 00036",
+            "00001  0 00031 0 00036", /* list of first word of all diag records*/
             "00002  0 00036 0 03630",
             "00003  0 01303 0 01330",
             "00004  0 01303 0 03533",
@@ -228,7 +228,7 @@ namespace MasterTape
             }
             using (TapeWriter w = new TapeWriter(args[0], true))
             {
-                w.WriteRecord(true, UlongRecToByteRec(new ulong[1])); /* dummy 1-CS*/
+                w.WriteRecord(true, UlongRecToByteRec(new ulong[1])); /* write dummy 1-CS*/
                 w.WriteEOF();
                 w.WriteEOF();
                 for (int i = 1; i < 192; i++)
@@ -242,8 +242,8 @@ namespace MasterTape
                     ulong[] data = new ulong[endadr - startadr + 1];
                     data[0] = 0x600000000UL + (ulong)i;
                     if(i==1)
-                        data[1] = 0x1F2000091UL;
-                    w.WriteRecord(true, UlongRecToByteRec(data)); /* dummy diag record*/
+                        data[1] = 0x1F2000091UL; /* second word of diag rec 1*/
+                    w.WriteRecord(true, UlongRecToByteRec(data)); /* write dummy diag record*/
                 }
                 w.WriteEOF();
             }

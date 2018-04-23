@@ -6,13 +6,13 @@ namespace Split
 {
     class DeckReader
     {
-        TapeReader r; /* Speicher für Tapereader */
-        Card crd; /* Speicher für Karte */
-        bool transferread; /* transferkarte schon gelesen */
-        BinaryCardConverter.CardType t; /* typ */
-        int n; /* Anzahl Worte schon gelesen */
-        int cur_adr; /* Aktuelle Adresse auf Karte */
-        List<Card> deck; /* speichert gelesene karten */
+        TapeReader r; /* stores tapereader */
+        Card crd; /* stores card */
+        bool transferread; /* transfercard already read */
+        BinaryCardConverter.CardType t; /* card type */
+        int n; /* number of words already read */
+        int cur_adr; /* currend address on card */
+        List<Card> deck; /* stores already read cards */
         public char Cardtype()
         {
             char dt;
@@ -35,29 +35,29 @@ namespace Split
             }
             return dt;
         }
-        public DeckReader(TapeReader re, List<Card> d)
+        public DeckReader(TapeReader re, List<Card> d) /* constructor */
         {
-            /* liest karten im CBN format vom tape, und speichert nach d, dt: kartentyp, F=FUL,A=ABS,R=REL,T=TRANSFER */
+            /* reads cards in CBN format from tape, and stores them to d */
 
             transferread = false;
             r = re;
             deck = d;
-            if (r.ReadRecord(out bool binary, out byte[] mrecord) <= 0) /* karte lesen */
+            if (r.ReadRecord(out bool binary, out byte[] mrecord) <= 0) /* read card */
                 throw new Exception("last card read");
-            CBNConverter.FromCBN(mrecord, out crd); /* umwandeln */
+            CBNConverter.FromCBN(mrecord, out crd); /* convert */
 
-            t = BinaryCardConverter.GetCardType(crd); /* Typ der karte bestimmen */
-            n = 0; /* noch nichts gelesen */
-            switch (t) /* typ auswerten */
+            t = BinaryCardConverter.GetCardType(crd); /* detect card type */
+            n = 0; /* nothing read yet */
+            switch (t) /* evaluate type */
             {
                 case BinaryCardConverter.CardType.Full:
-                    cur_adr = 0; /* Full decks beginnen bei 0*/
+                    cur_adr = 0; /* a full deck start at 0*/
                     break;
                 case BinaryCardConverter.CardType.Abs:
-                    cur_adr = (int)crd.W9L.A; /* startadresse lesen */
+                    cur_adr = (int)crd.W9L.A; /* read start address */
                     break;
                 case BinaryCardConverter.CardType.Rel:
-                    cur_adr = (int)crd.W9L.A; /* startadresse lesen */
+                    cur_adr = (int)crd.W9L.A; /* read start address */
                     break;
                 case BinaryCardConverter.CardType.Transfer:
                 case BinaryCardConverter.CardType.RelTransfer:
@@ -65,9 +65,9 @@ namespace Split
                 default:
                     throw new InvalidDataException("invalid card");
             }
-            deck.Add(crd); /* karte zum deck hinzufügen */
+            deck.Add(crd); /* add card to deck */
         }
-        public bool Read(out int adr, out long value) /* wort und adresse aus karte lesen, rückgabe true normale karte, rückgabe false transferkarte, dann value=0, adr=transferadresse */
+        public bool Read(out int adr, out long value) /* read  address and word from cards, return false transfercard read, then value=0, adr=transferaddress */
         {
             adr = 0;
             value = 0;
@@ -76,93 +76,93 @@ namespace Split
             switch (t)
             {
                 case BinaryCardConverter.CardType.Full:
-                    if (n == 24) /* alles schon gelesen? */
+                    if (n == 24) /* all words already read? */
                     {
-                        /* nächste karte lesen */
+                        /* get next card */
                         if (r.ReadRecord(out bool binary, out byte[] mrecord) <= 0)
                             throw new Exception("last card read");
 
-                        /* umwandlen */
+                        /* convert */
                         CBNConverter.FromCBN(mrecord, out crd);
-                        deck.Add(crd); /* karte zum deck hinzufügen */
+                        deck.Add(crd); /* add to deck */
                         BinaryCardConverter.CardType tt = BinaryCardConverter.GetCardType(crd);
-                        if (tt != BinaryCardConverter.CardType.Full) /* muss auch full sein */
+                        if (tt != BinaryCardConverter.CardType.Full) /* check card type */
                             Console.WriteLine("invalid card type {0})", tt);
-                        n = 0; /* noch nichts gelesen */
+                        n = 0; /* nothing read yet */
 
 
                     }
-                    adr = cur_adr; /* adresse übernehmen */
-                    value = (long)crd.C[n].LW; /* wert übernehmen */
-                    /* weiterzählen */
+                    adr = cur_adr; /* get address */
+                    value = (long)crd.C[n].LW; /* get word */
+                    /* count  */
                     n++;
                     cur_adr++;
-                    return true; /* karte gelesen */
+                    return true; /* word from card read */
                 case BinaryCardConverter.CardType.Abs:
-                    if (n == crd.W9L.D) /* alle karten schon gelesen */
+                    if (n == crd.W9L.D) /* all words already read? */
                     {
-                        if (r.ReadRecord(out bool binary, out byte[] mrecord) <= 0) /* Nächste Karte lesen */
+                        if (r.ReadRecord(out bool binary, out byte[] mrecord) <= 0) /* get next card */
                             throw new Exception("last card read");
-                        CBNConverter.FromCBN(mrecord, out crd); /* umwandeln */
-                        deck.Add(crd); /* karte zum deck hinzufügen */
-                        BinaryCardConverter.CardType nt = BinaryCardConverter.GetCardType(crd); /* kartentyp bestimmen */
-                        if (nt == BinaryCardConverter.CardType.Transfer) /* transferkarte ? */
+                        CBNConverter.FromCBN(mrecord, out crd); /* convert */
+                        deck.Add(crd); /* add to deck */
+                        BinaryCardConverter.CardType nt = BinaryCardConverter.GetCardType(crd); /* check card type */
+                        if (nt == BinaryCardConverter.CardType.Transfer) /* transfercard ? */
                         {
-                            adr = (int)crd.W9L.A;/* adresse übernehmen */
-                            value = 0; /* wert 0 be transferkarte */
-                            transferread = true; /* merker setzen */
-                            return false; /* transferkarte gelesen */
+                            adr = (int)crd.W9L.A;/* get transfer address */
+                            value = 0; /*  0 for transfercard */
+                            transferread = true; /* set flag */
+                            return false; /* transfercard read */
                         }
-                        if (nt != t) /* typ anders ?*/
+                        if (nt != t) /* type changed ?*/
                             throw new Exception("invalid card type");
-                        n = 0; /* zähler rücksetzen */
-                        cur_adr = (int)crd.W9L.A; /* akt adresse übernehmen */
+                        n = 0; /* reset word counter */
+                        cur_adr = (int)crd.W9L.A; /* set address */
 
 
                     }
-                    adr = cur_adr; /* adresse übernehmen */
-                    value = (long)crd.C[n + 2].LW; /* wert aus karte übernehmen */
-                    n++;/* weiterzählen */
+                    adr = cur_adr; /* get address */
+                    value = (long)crd.C[n + 2].LW; /* get word */
+                    n++;/* count */
                     cur_adr++;
-                    return true;  /* karte gelesen */
+                    return true;  /* word from card read */
                 case BinaryCardConverter.CardType.Rel:
-                    if (n == crd.W9L.D) /* alle karten schon gelesen */
+                    if (n == crd.W9L.D) /* all words already read? */
                     {
-                        if (r.ReadRecord(out bool binary, out byte[] mrecord) <= 0) /* Nächste Karte lesen */
+                        if (r.ReadRecord(out bool binary, out byte[] mrecord) <= 0) /* get next card */
                             throw new Exception("last card read");
-                        CBNConverter.FromCBN(mrecord, out crd); /* umwandeln */
-                        deck.Add(crd); /* karte zum deck hinzufügen */
-                        BinaryCardConverter.CardType nt = BinaryCardConverter.GetCardType(crd);/* kartentyp bestimmen */
-                        if (nt == BinaryCardConverter.CardType.RelTransfer) /* transferkarte ? */
+                        CBNConverter.FromCBN(mrecord, out crd); /* convert */
+                        deck.Add(crd); /* add to deck */
+                        BinaryCardConverter.CardType nt = BinaryCardConverter.GetCardType(crd);/* check card type */
+                        if (nt == BinaryCardConverter.CardType.RelTransfer) /* transfercard ? */
                         {
-                            adr = (int)crd.W9L.A;/* adresse übernehmen */
-                            value = 0;/* wert 0 be transferkarte */
-                            transferread = true; /* merker setzen */
-                            return false; /* transferkarte gelesen */
+                            adr = (int)crd.W9L.A;/* get transfer address */
+                            value = 0;/*  0 for transfercard */
+                            transferread = true; /* set flag */
+                            return false; /* transfercard read */
                         }
-                        if (nt != t)  /* typ anders ?*/
+                        if (nt != t)  /* type changed ?*/
                             throw new Exception("invalid card type");
-                        n = 0; /* zähler rücksetzen */
-                        cur_adr = (int)crd.W9L.A; /* akt adresse übernehmen */
+                        n = 0; /* reset word counter */
+                        cur_adr = (int)crd.W9L.A; /* set address */
                     }
-                    adr = cur_adr; /* adresse übernehmen */
-                    value = (long)crd.C[n + 4].LW; /* wert aus karte übernehmen */
-                    n++; /* weiterzählen */
+                    adr = cur_adr; /* get address */
+                    value = (long)crd.C[n + 4].LW; /* get word */
+                    n++; /* count */
                     cur_adr++;
-                    return true; /* karte gelesen */
+                    return true; /* word from card read */
                 case BinaryCardConverter.CardType.Transfer:
                 case BinaryCardConverter.CardType.RelTransfer:
                     {
-                        adr = (int)crd.W9L.A;/* adresse übernehmen */
-                        value = 0;/* wert 0 be transferkarte */
-                        transferread = true; /* merker setzen */
-                        return false; /* transferkarte gelesen */
+                        adr = (int)crd.W9L.A;/* get transfer address */
+                        value = 0;/*  0 for transfercard */
+                        transferread = true; /* set flag */
+                        return false; /* transfercard read */
                     }
                 default:
                     throw new InvalidDataException("invalid card");
             }
         }
-        public bool CardEmpty()
+        public bool CardEmpty() /* check if no more words on card*/
         {
             switch (t)
             {
@@ -175,6 +175,7 @@ namespace Split
                     }
                     break;
                 case BinaryCardConverter.CardType.Abs:
+                case BinaryCardConverter.CardType.Rel:
                     if (n < crd.W9L.D) /* still data on card */
                         return false;
                     break;

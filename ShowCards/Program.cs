@@ -41,19 +41,14 @@ namespace ShowCards
                         switch (t)
                         {
                             case BinaryCardConverter.CardType.Full:
-                                //if (HollerithConverter.CBNToString(mrecord, 0, 72, out string txt) == 0) /* check for Hollerith card */
-                                  //  Console.WriteLine("{0} Card {1} HOL {2}", txt, cardno,label);
-                                //else
-                                //{
-                                    for (int i = 0; i < 24; i++)
-                                    {
-                                        Console.Write("             {0}", crd.C[i].ToString());
-                                        if (i == 0)
-                                            Console.WriteLine("  Card {0} FUL {1}", cardno, label);
-                                        else
-                                            Console.WriteLine();
-                                    }
-                                //}
+                                for (int i = 0; i < 24; i++)
+                                {
+                                    Console.Write("             {0}", crd.C[i].ToString());
+                                    if (i == 0)
+                                        Console.WriteLine("  Card {0} FUL {1}", cardno, label);
+                                    else
+                                        Console.WriteLine();
+                                }
                                 break;
                             case BinaryCardConverter.CardType.Abs:
                                 for (int i = 0; i < crd.W9L.D; i++)

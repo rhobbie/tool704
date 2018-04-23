@@ -215,11 +215,11 @@ namespace Tools704
             return new W704() { LW = sum };
         }
     }
-    public static class BinaryCardConverter /* Handles SAP Binary cards */
+    public static class BinaryCardConverter /* Handles UASAP binary cards */
     {
         public enum CardType { Full, Abs, Transfer, Rel, RelTransfer, Origin, };
         public enum RelType { absolute, relocatable_direct, relocatable_complemented };
-        public static CardType GetCardType(Card C) /* Detects Type of Binary Card according to Share Reference Manual Section 3.10 */
+        public static CardType GetCardType(Card C) /* Detects type of binary card according to Share Reference Manual Section 3.10 */
         {
             if (C.W9R.LW != 0 && ((C.W9L.P & 1) == 0)) /* with checksum ?*/
             {
@@ -302,10 +302,10 @@ namespace Tools704
         }
     }
     public static class CBNConverter /* Converter betwen binary cards in RCD format and CBN card format */
-        {
+    {
         public static byte[] ToCBN(Card crd) /* convert card from RCD Format to CBN format */
         {
-
+           
             byte[] trecord = new byte[160];
             ulong[] mrecord = new ulong[24];
 
@@ -379,8 +379,8 @@ namespace Tools704
                 hollerith2bcd.Add(w, i);
             }
         }
-        public static int CBNToBCD(byte[] trecord, int start, int length, out byte[] bcd) /* Wandle Hollerith Column Binary Format zu BCD */
-        {                                                                            /* rückgabe anzahl ungütiger Hollerith codes */
+        public static int CBNToBCD(byte[] trecord, int start, int length, out byte[] bcd) /* Convert Hollerith Column Binary format to BCD */
+        {                                                                            /* return: number of invalid Hollerith codes */
             bcd = new byte[length];
             int err = 0;
             for (int i = 0, x = start * 2; i < length; i++, x += 2)
@@ -390,13 +390,13 @@ namespace Tools704
                     bcd[i] = value;
                 else
                 {
-                    bcd[i] = 0x30;  /* ungültig */
+                    bcd[i] = 0x30;  /* invalid */
                     err++;
                 }
             }
             return err;
         }
-        public static void BCDToCBN(byte[] bcd, int start, byte[] trecord) /* Wandle BCD zu Hollerith Column Binary  */
+        public static void BCDToCBN(byte[] bcd, int start, byte[] trecord) /* Convert BCD zu Hollerith Column Binary  */
         {
             int x = start * 2;
             foreach (byte b in bcd)
@@ -409,91 +409,31 @@ namespace Tools704
                 x += 2;
             }
         }
-        public static int CBNToString(byte[] trecord, int start, int length, out string s) /* Wandle Hollerith Column Binary Format zu string */
-        {
-            int err;/* rückgabe anzahl ungütiger Hollerith codes */
+        public static int CBNToString(byte[] trecord, int start, int length, out string s) /* Convert Hollerith Column Binary format to string */
+        {                                                                                  /* return: number of invalid Hollerith codes */
+            int err;
             err = CBNToBCD(trecord, start, length, out byte[] bcd);
             s = BcdConverter.BcdToString(bcd);
             return err;
         }
-        public static void StringToCBN(string s, int start, byte[] trecord) /* Wandle string zu Hollerith Column Binary  */
+        public static void StringToCBN(string s, int start, byte[] trecord) /* Convert string zu Hollerith Column Binary  */
         {
             BCDToCBN(BcdConverter.StringToBcd(s), start, trecord);
         }
     }
     public static class BcdConverter/* Converter betwen BCD data and char/string data */
     {
-        /* Umwandlung bcd mem format nach char, quelle: fortran-ii listing, listtape.c */
-        static int[] bcd2asc = new int[64]; /*  6 bit bcd to char, wert 10dez ungültig, ergibt -1 */
+
+        static int[] bcd2asc = new int[64]; /*  6 bit bcd to char, value 10dec=invalid, results to -1 */
         static Dictionary<char, int> asc2bcd;
-        static readonly string[] ibm704bcd = new string[] /* Umwandlungstabelle, Erste zwei Zeichen Oktalwert, drittes Zeichen Charwert */
+        static readonly string[] ibm704bcd = new string[] /* Conversion table, first two chars: octal value, third: char value */
         {
-            "000",
-            "011",
-            "022",
-            "033",
-            "044",
-            "055",
-            "066",
-            "077",
-            "108",
-            "119",
-            "12_",  /* Soll: b durchgestrichen ␢  slashed b substitute blank SM670000 Substitute Blank [That is the small b shape with slash.]  U+2422 BLANK SYMBOL */
-            "13=",  /* Report # */                
-            "14'",  /* Report @ */
-            "15:",
-            "16>",
-            "17{",  /* auch &"  Soll Wurzel: √ square root tape mark*/
-            "20+",  /* Report & */
-            "21A",
-            "22B",
-            "23C",
-            "24D",
-            "25E",
-            "26F",
-            "27G",
-            "30H",
-            "31I",
-            "32?",
-            "33.",
-            "34)", /* Report Kleines quadrat ⌑ SM490000	Lozenge U+2311 SQUARE LOZENGE */
-            "35[",
-            "36<",
-            "37}", /*auch %| soll: Senkrechter strich dreimal durchgestrichen  SS970000 Group Mark [Vertical bar across three short horizontal bars]  U+241D SYMBOL FOR GROUP SEPARATOR ␝ */
-            "40-",
-            "41J",
-            "42K",
-            "43L",
-            "44M",
-            "45N",
-            "46O",
-            "47P",
-            "50Q",
-            "51R",
-            "52!",
-            "53$",
-            "54*",
-            "55]",
-            "56;",
-            "57^", /* auch _ soll: dreieck ∆ Δ Greek capital delta mode change*/
-            "60 ",
-            "61/",
-            "62S",
-            "63T",
-            "64U",
-            "65V",
-            "66W",
-            "67X",
-            "70Y",
-            "71Z",
-            "72|", /* auch #  soll: senkrechter strich zweimal durchgestrichen ‡ ‡  not equals record mark SS950000 Record Mark [Vertical bar across two short horizontal bars]  U+241E SYMBOL FOR RECORD SEPARATOR  U+29E7 THERMODYNAMIC [Vertical bar across two short horizontal bars] */
-            "73,",
-            "74(", /* Report: % */
-            "75~", /* auch ^` soll: inverses ^  ˅ γ U+02C7 ˇ caron  inverted caret or equals  word separator  U+22CE CURLY LOGICAL OR */
-            "76\\",
-            "77\"" /* auch { soll: wagerechter strich 3 mal durchgestrichen ⧻ triple vertical bar slashed segment mark SS960000 Segment Mark [Horizontal bar across 3 short verticals]   U+241F SYMBOL FOR UNIT SEPARATOR U+29FB TRIPLE PLUS [Horizontal bar across three short verticals] */
+            "000","011","022","033","044","055","066","077","108","119","12_","13=","14'","15:","16>","17{",
+            "20+","21A","22B","23C","24D","25E","26F","27G","30H","31I","32?","33.","34)","35[","36<","37}",
+            "40-","41J","42K","43L","44M","45N","46O","47P","50Q","51R","52!","53$","54*","55]","56;","57^",
+            "60 ","61/","62S","63T","64U","65V","66W","67X","70Y","71Z","72|","73,","74(","75~","76\\","77\""
         };
-        static BcdConverter() /* statischer Konstruktor */
+        static BcdConverter() /* static Construktor */
         {
             int i;
             asc2bcd = new Dictionary<char, int>();
@@ -510,9 +450,9 @@ namespace Tools704
                     asc2bcd.Add(cl, b);
             }
         }
-        public static char BcdToChar(byte bcd) /* wandelt BCD nach char mit Prüfung */
+        public static char BcdToChar(byte bcd) /* converts BCD to char */
         {
-            if (0 != (bcd & 0xC0u)) /* bits 7 oder 6 müssen Null sein */
+            if (0 != (bcd & 0xC0u)) /* Bits 7 oder 6 have to be zero */
                 throw new Exception("BcdConverter:invalid BCD char");
             if (bcd2asc[bcd] == -1)
             {
@@ -521,7 +461,7 @@ namespace Tools704
             }
             return (char)bcd2asc[bcd];
         }
-        public static byte CharToBcd(char chr)/* wandelt char nach BCD mit Prüfung */
+        public static byte CharToBcd(char chr)/* converts char to BCD */
         {
             if (asc2bcd.TryGetValue(chr, out int v))
             {
@@ -533,14 +473,14 @@ namespace Tools704
                 return (byte)asc2bcd['?'];
             }
         }
-        public static byte[] StringToBcd(string s)/* wandelt string nach BCD Array */
+        public static byte[] StringToBcd(string s)/* converts string to BCD array */
         {
             byte[] B = new byte[s.Length];
             for (int i = 0; i < s.Length; i++)
                 B[i] = CharToBcd(s[i]);
             return B;
         }
-        public static string BcdToString(byte[] bcd) /* wandelt BCD array string char mit Prüfung */
+        public static string BcdToString(byte[] bcd) /* converts BCD array to string */
         {
             StringBuilder s = new StringBuilder(bcd.Length);
             foreach (byte b in bcd)
@@ -550,54 +490,54 @@ namespace Tools704
     }
     public static class TapeConverter /* Converter between raw tape records and bcd/binary records */
     {
-        /* Daten auf Tape ist folge von 6 bit werten: Bits 0-5: Zeichen, Bit 6: Parity */
-        /* Die Parity (grade/ungerade) der Bits 0-6 aller Bytes eines Records ist geich*/
-        /* Bei ungerader Parity: Binary Record */
-        /* Binary Records enthalten beliebige 6 Bit Daten */
-        /* Bei geradeder Parity: BCD Record*/
-        /* Ein BCD Record darf keine Null enthalten */
-        /* Bei BCD Records erfolgt eine Umwandlung vom Tapeformat zum Memoryformat: */
-        /* Tape 10dez -> Memory 0 (BCD '0') und  Wenn Bit 4 gesetzt wird Bit 5 invertiert, d.h. von Tape zu Mem werden BDC Zeichen  'A'-'I' mit 'S'-'Z' getauscht,  */
+        /* Data on Tape ist sequence of 6 bit values: bits 0-5: character, Bit 6: parity */
+        /* The parity (even/odd) of all bytes from a records is the same*/
+        /* Odd parity: binary record */
+        /* binary records can contain any 6 bit data */
+        /* Even Parity: BCD eecord*/
+        /* BCD Record cannot contain a Zero */
+        /* for BCD Record a conversion from tapeformat to memoryformat is performed */
+        /* Tape 10dez -> Memory 0 (BCD '0') and if bit 4 is set, bit 5 is inverted: fomr tape to mem  BDC   'A'-'I' is swapped with 'S'-'Z' */
 
-        static int[] tape2mem = null;  /* bcd umwandlung tape <-> mem */
-        static int[] mem2tape = null;  /* bcd umwandlung tape <-> mem */
-        static bool[] oddparity = null; /* 7-Bit parity table: true = ungerade parität */
-        static TapeConverter() /* statischer Konstruktor, füllt oddparity und tape2mem,mem2tape */
+        static int[] tape2mem = null;  /* bcd conversion tape -> mem */
+        static int[] mem2tape = null;  /* bcd conversion mem  -> tape */
+        static bool[] oddparity = null; /* 7-Bit parity table: true = odd parity */
+        static TapeConverter() /* statischer constructor, fills oddparity and tape2mem,mem2tape */
         {
             oddparity = new bool[128];
-            for (int i = 0; i < 128; i++) /* alle möglichen 7-bit werte */
+            for (int i = 0; i < 128; i++) /* for all 7-bit values */
             {
-                bool o = false; /* mit gerader parität anfangen */
-                for (int b = 0; b < 7; b++) /* alle bits durchgehen*/
+                bool o = false; /* start with even parity  */
+                for (int b = 0; b < 7; b++) /* for all bits*/
                 {
-                    if (0 != (i & (1 << b)))  /* bit gesetzt? */
-                        o = !o;   /* parity togglen */
+                    if (0 != (i & (1 << b)))  /* bit set? */
+                        o = !o;   /* toggle parity */
                 }
-                oddparity[i] = o;  /* parity speichern */
+                oddparity[i] = o;  /* store parity */
             }
             tape2mem = new int[64];
             mem2tape = new int[64];
-            for (int m = 0; m < 64; m++)  /* alle möglichen 6-bit werte */
+            for (int m = 0; m < 64; m++)  /* for all 6-bit values */
             {
                 int t;
                 if (m == 10)
-                    t = -1;  /* bcd-wert 10 in mem nicht erlaubt */
-                else if (m == 0) /* konvertiere 0 */
+                    t = -1;  /* bcd-value 10 in mem not allowed */
+                else if (m == 0) /* convert 0 */
                     t = 10;
-                else if (0 != (m & 16)) /* konvertiere A-I <-> S-Z */
+                else if (0 != (m & 16)) /* convert A-I <-> S-Z */
                     t = m ^ 32;
                 else
                     t = m;
-                mem2tape[m] = t;  /* wert speichern */
+                mem2tape[m] = t;  /* store value */
             }
-            for (int t = 0; t < 64; t++)  /* alle möglichen 6-bit werte */
+            for (int t = 0; t < 64; t++)  /* for all 6-bit values */
             {
                 int m;
                 if (t == 0)
-                    m = -1;  /* bcd-wert 0 auf tape nicht erlaubt */
-                else if (t == 10) /* konvertiere 0 */
+                    m = -1;  /* bcd-value 0 on tape not allowed */
+                else if (t == 10) /* convert 10 */
                     m = 0;
-                else if (0 != (t & 16)) /* konvertiere A-I <-> S-Z */
+                else if (0 != (t & 16)) /* convert A-I <-> S-Z */
                     m = t ^ 32;
                 else
                     m = t;
@@ -646,60 +586,61 @@ namespace Tools704
                 }
             }
         }
-    }
+    }    
     public class TapeReader /* Reads Tapes in P7B and tap format */ : IDisposable 
     {
-        /* P7B Format */
-        /* Ein Tape ist eine Folge von Records */
-        /* Record ist folge von Zeichen. Bits 0-6: Zeichen mit Parity, Bit 7: Recordmarker */
-        /* Das erste Byte des Records hat Bit 7 gesetzt, alle folgenden Bytes des Records haben Bit 7 nicht gesetzt*/
-        /* bcd record mit länge 1 und wert 15 ist EOF Marker */
+        /* P7B format */
+        /* A tape is a sequence of records */
+        /* A record is a sequence of characters. Bits 0-6: character including parity, Bit 7: Recordmarker */
+        /* The first byte of a records has bit 7 set, all following have bit 7 not set */
+        /* even parity= bcd record, odd parity=binary record */
+        /* bcd record with length 1 and value 15dez is EOF marker */
 
-        /* Tap Format: */
-        /* Ein Tape ist eine Folge von Records */
-        /* Record besteht aus 4 Byte Länge>0 <Maxbuffer, daten, 4 Byte Länge */
-        /* daten ist folge von Zeichen Bits 0-6: Zeichen mit Parity, Bit 7: 0 */
-        /* oder 4Byte==0.-> EOF Marker oder 4Byte=0xFFFFFFFF EOM (End of Media) */
+        /* Tap format: */
+        /* A tape is a sequence of records */
+        /* a record is  4 Byte Length, data, 4 Byte Byte Length */
+        /* data is a sequence of characters. Bits 0-6: character including parity bit 7: 0 */
+        /* or a record is 4 byte==0.-> EOF marker or 4 byte=0xFFFFFFFF EOM (End of Media) */
 
-        FileStream f = null;  /* eingabedatei */
-        bool stored; /* true: es wurde schon das erste byte des nächsten records oder eof gelesen.*/
-        int last;  /* erstes Byte des nächsten records oder -1=eom */
+        FileStream f = null;  /* inputfile */
+        bool stored; /* true:fist byte of record already read */
+        int last;  /* value of first byte or -1 for eom*/
         bool p7bflag;
-        public TapeReader(string filename, bool p7b) /* Konstruktor, öffnet file */
+        public TapeReader(string filename, bool p7b) /* Constructor,  opens file */
         {
             f = File.OpenRead(filename);
             p7bflag = p7b;
-            stored = false; /* noch kein zeichen gelesen */
+            stored = false; /* no char read */
         }
-        public int ReadRecord(out bool binary, out byte[] mrecord) /* liest ein record als array von 6-bit werten aus tape-file, rückgabe -1:ende der eingabedatei, 0: EOF, 1: record gelesen; binary true: binärformat false: bcdformat */
+        public int ReadRecord(out bool binary, out byte[] mrecord) /* reads a record as array of 6-bit value from tape-file, retun -1:end of input file 0: EOF marker read, 1: record read; binary=true: binary record false: bcd record */
         {
-            /* ausgabewerte rücksetzen */
+            /* reset output values */
             mrecord = null;
             binary = false;
             if (p7bflag) /* read p7b record */
             {
-                int b; /* aktuelles zeichen */
+                int b; /* current character */
 
-                if (stored) /* schon ein zeichen gemerkt */
+                if (stored) /* fist byte of record already read? */
                 {
-                    b = last; /* übernehmen */
+                    b = last; /* use it */
                     stored = false;
                 }
                 else
-                    b = f.ReadByte(); /* zeichen lesen */
+                    b = f.ReadByte(); /* read byte */
 
                 if (b < 0) /* end of media ? */
                     return -1; /* EOM */
-                if ((b & 128) == 0)  /* das erste zeichen eines records muss msb gesetzt haben */
+                if ((b & 128) == 0)  /* The first byte of a records must have bit 7 set */
                     throw new InvalidDataException("TapeReader:Bit 7 not set at record start");
-                List<byte> trecord = new List<byte>(160) { (byte)(b & 127) }; /* record start marker entfernen, zeichen speichern */
+                List<byte> trecord = new List<byte>(160) { (byte)(b & 127) }; /* remove record start marker, store character */
                 do
                 {
                     b = f.ReadByte();
-                    if (b < 0 || (b & 128) != 0) /* nächster record oder EOF */
+                    if (b < 0 || (b & 128) != 0) /* next record or EOF */
                     {
-                        stored = true; /* merker setzen */
-                        last = b; /* gelesenen wert speichern für nächsten aufruf*/
+                        stored = true; /* set flag */
+                        last = b; /* store value for next call*/
                         break;
                     }
                     trecord.Add((byte)b);
@@ -708,9 +649,9 @@ namespace Tools704
                 TapeConverter.FromTape(trecord.ToArray(), out binary, out mrecord);
                 if (!binary && mrecord.Length == 1 && mrecord[0] == 15)
                     return 0; /* EOF */
-                return 1; /* kein end of file */
+                return 1; /* no EOF */
             }
-            else /* read tap record */
+            else /* read tp record */
             {
                 const int maxbuffer = 32000;
                 byte[] len = new byte[4];
@@ -762,7 +703,7 @@ namespace Tools704
     }
     public class TapeWriter /* Writes Tapes in P7B and tap format */ : IDisposable
     {
-        FileStream f = null;  /* ausgabedatei */
+        FileStream f = null;  /* output file */
         bool p7bflag;
         public TapeWriter(string filename, bool p7b)
         {
