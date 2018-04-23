@@ -10,12 +10,15 @@ CopyCards
 MasterTape
   - Creates a dummy master tape for creating the Fortran II systemtapes.
   
-Patch
+PatchCard
   - Can change one or multiple words of a card. Needs a cardfile with a single card as input.
   
 Punch
   - Converts an ASCII text file into a Hollerith coded cardfile  
-  
+
+RemoveTransfercard
+  - Similar to CopyCards but removes an UASAP transfercard form the end of the cardfile.
+
 SapSplit
   - Needs an UASAP listfile and a binary carddeck from the same UASAP run as input. It splits the cardfile according to the ORG and END statements in the listing.
   
@@ -33,12 +36,12 @@ ShowTape
   
 SplitDeck
   - Splits a cardfile into two parts.
-  
-StripTransfercard
-  - Similar to CopyCards but removes an UASAP transfercard form the end of the cardfile.
-
-Tap2p7b
+ 
+Tp2p7b
   - Converts a SimH tape in *.tp format into p7b format.
+
+Tools704
+  - Common classes for tape and card handling
 
 TapeExtract
   - This tool needs one of the SHARE tapes as inputs.  (Currently working only for some of the tapes).  For each binary (BI) and symbolic (SY) record on the tape it creates one card file.
