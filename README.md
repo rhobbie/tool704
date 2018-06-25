@@ -44,8 +44,9 @@ Tools704
   - Common classes for tape and card handling
 
 TapeExtract
-  - This tool needs one of the SHARE tapes as inputs.  (Currently working only for some of the tapes).  For each binary (BI) and symbolic (SY) record on the tape it creates one card file.
-  The binary records are copied into a binary cardfile, the symbolic records are converted into a Hollerith coded cardfile.  A textfile is created which lists all records. 
+  - This tool needs one of the SHARE tapes as input. For each binary and symbolic record on the tape it creates one card file.
+  The binary records are copied into a binary cardfile, the symbolic records are converted into a Hollerith coded cardfile.  
+  A textfile is created which lists all records. 
   
 WriteTape
   - Converts an ASCII text file into a BCD tapefile.
