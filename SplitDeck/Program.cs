@@ -29,7 +29,7 @@ namespace SplitDeck
                 }
                 int numrec = (int)(length / 160);
                 if(num<0)
-                    num = numrec - num;                
+                    num += numrec;                
                 if (num <= 0 || num >= numrec)
                 {
                     Console.Error.WriteLine("wrong split position");
