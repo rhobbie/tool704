@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0ECF0E28-70FE-4F05-83E2-BA8951FA9438}</ProjectGuid>
+    <ProjectGuid>{BBF0E735-0414-4E4F-B57E-FFC3D72FA382}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>MasterTape</RootNamespace>
-    <AssemblyName>MasterTape</AssemblyName>
+    <RootNamespace>ShowBTape</RootNamespace>
+    <AssemblyName>ShowBTape</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
