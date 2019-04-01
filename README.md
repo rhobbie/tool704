@@ -7,9 +7,6 @@ CleanDeck
 CopyCards
   - Copies card files and joins several card files into one.
   
-MasterTape
-  - Creates a dummy master tape for creating the Fortran II systemtapes.
-  
 PatchCard
   - Can change one or multiple words of a card. Needs a cardfile with a single card as input.
   
@@ -33,6 +30,9 @@ ShowHCards
   
 ShowTape
   - Shows the content of the BCD records of a tapefile. This tool can be used to display the BCD records of the SHARE tapes (needs then an 80 as second parameter).
+
+ShowBTape
+  - Shows the content of the binary records of a tapefile.
   
 SplitDeck
   - Splits a cardfile into two parts.
